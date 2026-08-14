@@ -5,10 +5,10 @@ function Home({ addToCart }) {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Get unique categories from products
+  // Get unique categories
   const categories = ["All", ...new Set(products.map((p) => p.category))];
 
-  // Filter products based on category AND search
+  // Filter products
   const filteredProducts = products.filter((product) => {
     const matchesCategory =
       selectedCategory === "All" || product.category === selectedCategory;
@@ -32,7 +32,7 @@ function Home({ addToCart }) {
         </p>
       </div>
 
-      {/* ========== SEARCH BAR ========== */}
+
       <div style={{ maxWidth: "500px", margin: "0 auto 2rem" }}>
         <input
           type="text"
@@ -53,7 +53,7 @@ function Home({ addToCart }) {
         />
       </div>
 
-      {/* ========== CATEGORY FILTER BUTTONS ========== */}
+  
       <div
         style={{
           display: "flex",

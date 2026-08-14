@@ -1,13 +1,17 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 function Checkout({ cart, cartTotal, clearCart }) {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [step, setStep] = useState(1);
+  
+  // Pre-fill form with user data if logged in
   const [formData, setFormData] = useState({
-    name: "",
-    phone: "",
-    address: "",
+    name: user?.name || "",
+    phone: user?.phone || "",
+    address: user?.address || "",
     city: "",
     zip: "",
     cardNumber: "",
@@ -20,16 +24,10 @@ function Checkout({ cart, cartTotal, clearCart }) {
   };
 
   const handleCardNumber = (e) => {
-    // Get the raw input value
     let rawValue = e.target.value;
-
-    // Remove all non-digit characters
     let digits = rawValue.replace(/\D/g, "");
-
-    // Limit to 16 digits
     digits = digits.slice(0, 16);
 
-    // Format with spaces after every 4 digits
     let formattedValue = "";
     for (let i = 0; i < digits.length; i++) {
       if (i > 0 && i % 4 === 0) {
@@ -47,9 +45,37 @@ function Checkout({ cart, cartTotal, clearCart }) {
     setFormData({ ...formData, expiry: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setStep(3);
+
+    // If user is logged in, save order to database
+    if (user) {
+      try {
+        const token = localStorage.getItem("token");
+        await fetch("http://localhost:5000/api/orders/create", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            items: cart,
+            total: cartTotal,
+            customer: {
+              name: formData.name,
+              phone: formData.phone,
+              address: formData.address,
+              city: formData.city,
+              zip: formData.zip,
+            },
+            cardLast4: formData.cardNumber.replace(/\s/g, "").slice(-4),
+          }),
+        });
+      } catch (error) {
+        console.error("Failed to save order:", error);
+      }
+    }
 
     setTimeout(() => {
       const orderDetails = {
@@ -58,7 +84,7 @@ function Checkout({ cart, cartTotal, clearCart }) {
         total: cartTotal,
         customer: {
           name: formData.name,
-          email: formData.email,
+          phone: formData.phone,
           address: formData.address,
           city: formData.city,
           zip: formData.zip,
@@ -233,6 +259,34 @@ function Checkout({ cart, cartTotal, clearCart }) {
             <h3 style={{ marginBottom: "1rem", color: "#333" }}>
               Shipping Information
             </h3>
+            
+            {/* Show login prompt if not logged in */}
+            {!user && (
+              <div style={{
+                background: "#e0e7ff",
+                padding: "0.75rem",
+                borderRadius: "6px",
+                marginBottom: "1rem",
+                fontSize: "0.9rem",
+                color: "#4338ca",
+              }}>
+                💡 <strong>Tip:</strong> Login to auto-fill your information and save orders!
+              </div>
+            )}
+
+            {user && (
+              <div style={{
+                background: "#d1fae5",
+                padding: "0.75rem",
+                borderRadius: "6px",
+                marginBottom: "1rem",
+                fontSize: "0.9rem",
+                color: "#065f46",
+              }}>
+                ✅ Form pre-filled from your account, {user.name}!
+              </div>
+            )}
+
             <input
               type="text"
               name="name"
@@ -244,15 +298,15 @@ function Checkout({ cart, cartTotal, clearCart }) {
             />
             <input
               type="tel"
-              name="number"
+              name="phone"
               placeholder="01XXXXXXXXX"
               required
               maxLength="11"
               minLength="11"
-              value={formData.number}
+              value={formData.phone}
               onChange={(e) => {
                 const value = e.target.value.replace(/\D/g, "").slice(0, 11);
-                setFormData({ ...formData, number: value });
+                setFormData({ ...formData, phone: value });
               }}
               style={inputStyle}
               pattern="01[0-9]{9}"
@@ -315,17 +369,6 @@ function Checkout({ cart, cartTotal, clearCart }) {
             <h3 style={{ marginBottom: "1rem", color: "#333" }}>
               Payment Details
             </h3>
-
-            {/* <div style={{
-  background: '#fff3cd',
-  padding: '0.75rem',
-  borderRadius: '6px',
-  marginBottom: '1rem',
-  fontSize: '0.9rem',
-  color: '#856404'
-}}>
-  💡 Demo Mode: Use card <strong>4242424242424242</strong>
-</div> */}
 
             <label
               style={{

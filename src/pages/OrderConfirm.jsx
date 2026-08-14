@@ -38,6 +38,7 @@ function OrderConfirm() {
 
   return (
     <div style={{ maxWidth: "600px", margin: "2rem auto", padding: "0 2rem" }}>
+      {/* Success Header */}
       <div
         style={{
           background: "white",
@@ -72,6 +73,7 @@ function OrderConfirm() {
         </p>
       </div>
 
+      {/* Order Details */}
       <div
         style={{
           background: "white",
@@ -100,7 +102,10 @@ function OrderConfirm() {
             <strong>Date:</strong> {new Date(order.date).toLocaleString()}
           </p>
           <p style={{ color: "#666", marginBottom: "0.5rem" }}>
-            <strong>Email:</strong> {order.customer.email}
+            <strong>Name:</strong> {order.customer.name}
+          </p>
+          <p style={{ color: "#666", marginBottom: "0.5rem" }}>
+            <strong>Phone:</strong> {order.customer.phone}
           </p>
           <p style={{ color: "#666", marginBottom: "0.5rem" }}>
             <strong>Shipping Address:</strong> {order.customer.address},{" "}
@@ -112,6 +117,7 @@ function OrderConfirm() {
           </p>
         </div>
 
+        {/* Items List */}
         <div style={{ marginTop: "1.5rem" }}>
           <h4 style={{ marginBottom: "0.5rem", color: "#333" }}>
             Items Purchased:
@@ -136,6 +142,7 @@ function OrderConfirm() {
           ))}
         </div>
 
+        {/* Total */}
         <div
           style={{
             display: "flex",
@@ -152,23 +159,44 @@ function OrderConfirm() {
         </div>
       </div>
 
-      <Link
-        to="/"
-        style={{
-          display: "block",
-          width: "100%",
-          padding: "1rem",
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-          color: "white",
-          textDecoration: "none",
-          borderRadius: "8px",
-          fontSize: "1.1rem",
-          fontWeight: "600",
-          textAlign: "center",
-        }}
-      >
-        Continue Shopping
-      </Link>
+      {/* Action Buttons */}
+      <div style={{ display: "flex", gap: "1rem" }}>
+        <Link
+          to="/"
+          style={{
+            flex: 1,
+            display: "block",
+            padding: "1rem",
+            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            color: "white",
+            textDecoration: "none",
+            borderRadius: "8px",
+            fontSize: "1.1rem",
+            fontWeight: "600",
+            textAlign: "center",
+          }}
+        >
+          Continue Shopping
+        </Link>
+        <Link
+          to="/order-history"
+          style={{
+            flex: 1,
+            display: "block",
+            padding: "1rem",
+            background: "white",
+            color: "#667eea",
+            textDecoration: "none",
+            borderRadius: "8px",
+            fontSize: "1.1rem",
+            fontWeight: "600",
+            textAlign: "center",
+            border: "2px solid #667eea",
+          }}
+        >
+          View All Orders
+        </Link>
+      </div>
     </div>
   );
 }
