@@ -53,7 +53,7 @@ function Checkout({ cart, cartTotal, clearCart }) {
     if (user) {
       try {
         const token = localStorage.getItem("token");
-        await fetch("http://localhost:5000/api/orders/create", {
+        await fetch("https://wavemart-backend.onrender.com/api/orders/create", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
