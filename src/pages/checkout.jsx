@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import API_URL from "../config";
 import { useAuth } from "../context/AuthContext";
 
 function Checkout({ cart, cartTotal, clearCart }) {
@@ -53,7 +54,7 @@ function Checkout({ cart, cartTotal, clearCart }) {
     if (user) {
       try {
         const token = localStorage.getItem("token");
-        await fetch("https://wavemart-backend.onrender.com/api/orders/create", {
+        await fetch(`${API_URL}/api/orders/create`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
